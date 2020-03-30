@@ -134,8 +134,175 @@ public class AlgorithmUtils {
         }
     }
 
+    /**
+     * 插入排序
+     * 原理：
+     * 1.通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入,
+     * 2.插入排序在实现上，通常采用in-place排序（即只需用到O(1)的额外空间的排序），
+     * 3.因而在从后向前扫描过程中，需要反复把已排序元素逐步向后挪位，为最新元素提供插入空间。
+     * @param array
+     */
+    public static void insertionSort(int[] array) {
+        //对空一些特殊情况做判断
+        if (array == null || array.length <= 0 || array.length == 1) {
+            return;
+        }
+        for (int i = 0; i < array.length - 1; i++) {
+            //第一个值默认排序，从第二个开始
+            int current = array[i+1];
+            //将当前i记录一下，目的为移位做中间变量
+            int preIndex = i;
+            //如果当前值比它左边的值要小，那就先将左边的值逐一右移
+            while(preIndex >= 0 && current < array[preIndex]) {
+                array[preIndex + 1] = array[preIndex];
+                preIndex--;
+            }
+            //上面右移完事后，再将当前值赋值到当前位置上
+            array[preIndex + 1] = current;
+        }
+
+    }
+
+    /**
+     * 归并排序
+     * 原理：
+     * 1.归并排序是一种概念上最简单的排序算法，与快速排序一样，
+     * 2.归并排序也是基于分治法的,归并排序将待排序的元素序列分成两个长度相等的子序列，
+     * 3.为每一个子序列排序，然后再将他们合并成一个子序列。合并两个子序列的过程也就是两路归并。
+     * @param array
+     */
+    public static void mergeSort(int[] array) {
+        if (array == null || array.length <= 0) {
+            return;
+        }
+        int start = 0;
+        int end = array.length-1;
+        mergeSort(array, start, end);
+    }
+    private static void mergeSort(int[] array, int start, int end) {
+        if (start < end) {
+            int mid = (start + end)/2; //划分子序列
+            mergeSort(array, start, mid);
+            mergeSort(array, mid+1, end);
+            mergeSort(array, start, mid, end);
+        }
+    }
+    private static void mergeSort(int[] array, int left, int mid, int right) {
+        int temp[] = new int[array.length];
+        //leftT,midT是检测指针，k是存放指针
+        int leftT = left, midT = mid + 1, k = left;
+        while (leftT <= mid && midT <= right) {
+            if (array[leftT] <= array[midT]) {
+                temp[k++] = array[leftT++];
+            } else {
+                temp[k++] = array[midT++];
+            }
+        }
+
+        while (leftT <= mid) temp[k++] = array[leftT++];
+        while (midT <= right) temp[k++] = array[midT++];
+
+        for (int i = left; i <= right; i++) {
+            array[i] = temp[i];
+        }
+    }
+
+    /**
+     * 堆排序
+     * 原理：
+     * 1.构建初始堆，将待排序列构成一个大顶堆(或者小顶堆)，升序大顶堆，降序小顶堆；
+     * 2.将堆顶元素与堆尾元素交换，并断开(从待排序列中移除)堆尾元素。
+     * 3.重新构建堆。
+     * 4.重复2~3，直到待排序列中只剩下一个元素(堆顶元素)。
+     * @param array
+     */
+    public static void heapSort(int[] array) {
+        //创建堆
+        for (int i = (array.length - 1) / 2; i >= 0; i--) {
+            //从第一个非叶子结点从下至上，从右至左调整结构
+            adjustHeap(array, i, array.length);
+        }
+
+        //调整堆结构+交换堆顶元素与末尾元素
+        for (int i = array.length - 1; i > 0; i--) {
+            //将堆顶元素与末尾元素进行交换
+            int temp = array[i];
+            array[i] = array[0];
+            array[0] = temp;
+
+            //重新对堆进行调整
+            adjustHeap(array, 0, i);
+        }
+    }
+    /**
+     * 调整堆
+     * @param arr 待排序列
+     * @param parent 父节点
+     * @param length 待排序列尾元素索引
+     */
+    private static void adjustHeap(int[] arr, int parent, int length) {
+        //将temp作为父节点
+        int temp = arr[parent];
+        //左孩子
+        int lChild = 2 * parent + 1;
+
+        while (lChild < length) {
+            //右孩子
+            int rChild = lChild + 1;
+            // 如果有右孩子结点，并且右孩子结点的值大于左孩子结点，则选取右孩子结点
+            if (rChild < length && arr[lChild] < arr[rChild]) {
+                lChild++;
+            }
+            // 如果父结点的值已经大于孩子结点的值，则直接结束
+            if (temp >= arr[lChild]) {
+                break;
+            }
+            // 把孩子结点的值赋给父结点
+            arr[parent] = arr[lChild];
+            //选取孩子结点的左孩子结点,继续向下筛选
+            parent = lChild;
+            lChild = 2 * lChild + 1;
+        }
+        arr[parent] = temp;
+    }
+
+    /**
+     * 基数排序
+     * 原理：
+     * 1.基数排序(radix sort)又称桶排序（bucket sort），
+     * 2.相对于常见的比较排序，基数排序是一种分配式排序，
+     * 3.即通过将所有数字分配到应在的位置最后再覆盖到原数组完成排序的过程。
+     * @param array
+     * @param d
+     */
+    public static void radixSort(int[] array, int d) {
+        int n=1; //代表位数对应的数：1,10,100...
+        int k=0; //保存每一位排序后的结果用于下一位的排序输入
+        int length = array.length;
+        int[][] bucket = new int[10][length]; //排序桶用于保存每次排序后的结果，这一位上排序结果相同的数字放在同一个桶里
+        int[] order = new int[length]; //用于保存每个桶里有多少个数字
+        while(n < d) {
+            for(int num: array) { //将数组array里的每个数字放在相应的桶里
+                int digit = (num/n)%10;
+                bucket[digit][order[digit]] = num;
+                order[digit]++;
+            }
+            for(int i=0; i<length; i++) { //将前一个循环生成的桶里的数据覆盖到原数组中用于保存这一位的排序结果
+                if(order[i] != 0) { //这个桶里有数据，从上到下遍历这个桶并将数据保存到原数组中
+                    for(int j=0; j<order[i]; j++) {
+                        array[k] = bucket[i][j];
+                        k++;
+                    }
+                }
+                order[i] = 0; //将桶里计数器置0，用于下一次位排序
+            }
+            n*=10;
+            k=0; //将k置0，用于下一轮保存位排序结果
+        }
+    }
+
     public static void main(String[] args) {
-        // 冒泡排序
+        // 1.冒泡排序
         int[] array = {2,6,1,3,9,34,27,18,28,87,73,90};
         System.out.print("冒泡排序前： ");
         for (int i=0; i < array.length; i++) {
@@ -150,7 +317,7 @@ public class AlgorithmUtils {
         System.out.println();
         System.out.println();
 
-        // 快速排序
+        // 2.快速排序
         int[] array1 = {2,6,1,3,9,34,27,18,28,87,73,90};
         System.out.print("快速排序前： ");
         for (int i=0; i < array1.length; i++) {
@@ -165,7 +332,7 @@ public class AlgorithmUtils {
         System.out.println();
         System.out.println();
 
-        // 二分查找
+        // 3.二分查找
         int[] arrayInt = new int[1000];
         for (int i=0; i < 1000; i++) {
             arrayInt[i] = i;
@@ -173,7 +340,7 @@ public class AlgorithmUtils {
         binarySearch(arrayInt, 200);
         System.out.println();
 
-        // 选择排序
+        // 4.选择排序
         int[] array2 = {2,6,1,3,9,34,27,18,28,87,73,90};
         System.out.print("选择排序前： ");
         for (int i=0; i < array2.length; i++) {
@@ -184,6 +351,66 @@ public class AlgorithmUtils {
         System.out.print("选择排序后： ");
         for (int i=0; i < array2.length; i++) {
             System.out.print(array2[i]+" ");
+        }
+        System.out.println();
+        System.out.println();
+
+        // 5.插入排序
+        int[] array3 = {2,6,1,3,9,34,27,18,28,87,73,90};
+        System.out.print("插入排序前： ");
+        for (int i=0; i < array3.length; i++) {
+            System.out.print(array3[i]+" ");
+        }
+        System.out.println();
+        insertionSort(array3);
+        System.out.print("插入排序后： ");
+        for (int i=0; i < array3.length; i++) {
+            System.out.print(array3[i]+" ");
+        }
+        System.out.println();
+        System.out.println();
+
+        // 6.归并排序
+        int[] array4 = {2,6,1,3,9,34,27,18,28,87,73,90};
+        System.out.print("归并排序前： ");
+        for (int i=0; i < array4.length; i++) {
+            System.out.print(array4[i]+" ");
+        }
+        System.out.println();
+        mergeSort(array4);
+        System.out.print("归并排序后： ");
+        for (int i=0; i < array4.length; i++) {
+            System.out.print(array4[i]+" ");
+        }
+        System.out.println();
+        System.out.println();
+
+        // 7.基数排序
+        int[] array6 = {2,6,1,3,9,34,27,18,28,87,73,90};
+        System.out.print("基数排序： ");
+        for (int i=0; i < array6.length; i++) {
+            System.out.print(array6[i]+" ");
+        }
+        System.out.println();
+        radixSort(array6, 100);
+        System.out.print("基数排序： ");
+        for (int i=0; i < array6.length; i++) {
+            System.out.print(array6[i]+" ");
+        }
+        System.out.println();
+        System.out.println();
+
+        // 8.堆排序
+        int[] array7 = {2,6,1,3,9,34,27,18,28,87,73,90};
+        System.out.print("堆排序： ");
+        for (int i=0; i < array7.length; i++) {
+            System.out.print(array7[i]+" ");
+        }
+        System.out.println();
+        heapSort(array7);
+        System.out.print("堆排序： ");
+        for (int i=0; i < array7.length; i++) {
+            System.out.print(array7[i]+" ");
         }
         System.out.println();
         System.out.println();
