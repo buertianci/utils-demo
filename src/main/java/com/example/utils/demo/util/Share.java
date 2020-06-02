@@ -1,4 +1,4 @@
-package com.example.utils.demo.service;
+package com.example.utils.demo.util;
 
 import lombok.extern.slf4j.Slf4j;
 
