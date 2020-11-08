@@ -146,5 +146,63 @@ public class FunctionDemoUtil {
         int[] position = new int[]{10, 8, 0, 5 ,3};
         int[] speed = new int[]{2, 4, 1, 1, 3};
         System.out.println(carTeam(12, position,speed));
+
+        //两个线程打印
+        Object obj = new Object();
+        Thread1 o1 = new Thread1(obj);
+        Thread2 o2 = new Thread2(obj);
+        Thread thread1 = new Thread(o1);
+        Thread thread2 = new Thread(o2);
+        thread1.start();
+        thread2.start();
+    }
+}
+
+/**
+ * 题目：
+ * 写2个线程,其中一个线程打印1～52,另一个线程打印A～Z,打印顺序应该是12A34B56C...5152Z。需使用线程间通信。
+ */
+class Thread1 implements Runnable{
+
+    private Object obj;
+    public Thread1(Object obj) {
+        this.obj=obj;
+    }
+    @Override
+    public void run() {
+        synchronized (obj) {
+            for (int i=1; i<=52; i++) {
+                System.out.print(i);
+                if (i % 2 == 0) {
+                    obj.notifyAll();
+                    try {
+                        obj.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+}
+class Thread2 implements Runnable{
+
+    private Object obj;
+    public Thread2(Object obj) {
+        this.obj=obj;
+    }
+    @Override
+    public void run() {
+        synchronized (obj) {
+            for (int i=0; i<26; i++) {
+                System.out.print((char)('A'+i));
+                obj.notifyAll();
+                try {
+                    obj.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
