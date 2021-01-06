@@ -121,7 +121,7 @@ public class HttpClientUtil {
      * @return
      * @throws Exception
      */
-    public static String sendPostFormData(String url,Map<String, String> reqParam,String auth) throws Exception{
+    public static String sendPostFormData(String url, Map<String, String> reqParam, String auth) throws Exception{
 
         //CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
@@ -130,15 +130,17 @@ public class HttpClientUtil {
             post.setHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
 
             post.setHeader("Authorization", auth);
-            //setConnectTimeout：设置连接超时时间，单位毫秒。
+            // setConnectTimeout：设置连接超时时间，单位毫秒。
             // setConnectionRequestTimeout：设置从connect Manager获取Connection 超时时间，单位毫秒。
             // 这个属性是新加的属性，因为目前版本是可以共享连接池的。setSocketTimeout：请求获取数据的超时时间，单位毫秒。
             // 如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
             RequestConfig defaultRequestConfig = RequestConfig.custom().setConnectTimeout(5000).setConnectionRequestTimeout(5000).setSocketTimeout(15000).build();
             post.setConfig(defaultRequestConfig);
             List<NameValuePair> parameters = new ArrayList<>(0);
-            for(Map.Entry<String, String> param : reqParam.entrySet()){
-                parameters.add(new BasicNameValuePair(param.getKey(), param.getValue()));
+            if (reqParam != null && reqParam.size() > 0) {
+                for(Map.Entry<String, String> param : reqParam.entrySet()){
+                    parameters.add(new BasicNameValuePair(param.getKey(), param.getValue()));
+                }
             }
             // 构造一个form表单式的实体
             UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters);

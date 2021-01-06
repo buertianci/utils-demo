@@ -84,7 +84,7 @@ public class EncryptionUtil {
      * @throws Exception
      */
     public static String encryptBASE64(String key) throws Exception {
-        return (new BASE64Encoder()).encodeBuffer(key.getBytes("UTF-8")).replaceAll("\r|\n", "");
+        return (new BASE64Encoder()).encodeBuffer(key.getBytes("UTF-8")).replaceAll("[\\s*\t\n\r]", "");
     }
 
     /**
