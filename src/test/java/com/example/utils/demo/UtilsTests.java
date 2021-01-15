@@ -25,9 +25,9 @@ public class UtilsTests {
      * base64加密
      */
     @Test
-    public void encryptBASE64Test() {
+    public void encryptBASE64StrTest() {
         try {
-            String key = EncryptionUtil.encryptBASE64("小红".getBytes("UTF-8"));
+            String key = EncryptionUtil.encryptBASE64("IbGYSaskGg48XSRSIIXTZQVKcbkH1hFj:lrs8qowzvugDxWk0kEFpua9ktXeBpSPg");
             System.out.print(key);
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,8 +66,8 @@ public class UtilsTests {
     @Test
     public void getAccessTokenTest() throws Exception{
         String url = "https://account-gyd.glodon.com/v3/api/oauth2/token";
-        String appKey = "QSjJvHXvYYY4mjqrwbIXmOUshya9Qf5i";
-        String appSecret = "nOv18VCOSpLCb01SfPtKAgSyzDl8hPui";
+        String appKey = "sSYtc8yYvjBj36ufc0rxS6kgEqUPVHaD";
+        String appSecret = "HwKvuwLYMXOzDHR2PhLW8COzutVA41HD";
         String creds = String.format("%s:%s", appKey, appSecret);
         Map<String,String> contentMap = new HashMap<>();
         contentMap.put("grant_type", "client_credentials");
