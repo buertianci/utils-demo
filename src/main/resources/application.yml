@@ -1,0 +1,32 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: utils-demo
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+# 分布式文件系统FDFS配置
+fdfs:
+  soTimeout: 1500 #socket连接超时时长
+  connectTimeout: 600 #连接tracker服务器超时时长
+  reqHost: 192.168.133.131   #nginx访问地址
+  reqPort: 80              #nginx访问端口
+  thumbImage: #缩略图生成参数，可选
+    width: 150
+    height: 150
+  trackerList: #TrackerList参数,支持多个，我这里只有一个，如果有多个在下方加- x.x.x.x:port
+    - 192.168.133.131:22122
+    - 192.168.133.131:22122
+
+zookeeper:
+  address: 192.168.1.131:2181,192.168.1.132:2181,192.168.1.133:2181
+  timeout: 4000
+
+# swagger配置
+swagger:
+  enable: true
